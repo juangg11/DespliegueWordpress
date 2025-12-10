@@ -109,12 +109,19 @@ Asigna como propietario del directorio web al usuario y grupo www-data.
 # htacces
 
 <IfModule mod_rewrite.c> — Comprueba si el módulo mod_rewrite está habilitado; si no lo está, el bloque interior se ignora.
+
 RewriteEngine On — Activa el motor de reescritura de URLs para que las reglas siguientes se apliquen.
+
 RewriteBase / — Establece la ruta base relativa para las reglas de reescritura (aquí la raíz del sitio).
+
 RewriteRule ^index\.php$ - [L] — Si la URL solicitada es exactamente index.php, no se reescribe (-) y se detiene el procesamiento de reglas ([L]).
+
 RewriteCond %{REQUEST_FILENAME} !-f — Condición: continúa sólo si la solicitud no corresponde a un archivo existente en disco.
+
 RewriteCond %{REQUEST_FILENAME} !-d — Condición: continúa sólo si la solicitud no corresponde a un directorio existente en disco.
+
 RewriteRule . /index.php [L] — Redirige cualquier otra petición que haya pasado las condiciones a /index.php (enrutamiento frontal), y marca la regla como última ([L]).
+
 </IfModule> — Cierra el bloque de comprobación del módulo mod_rewrite.
 
 # Capturas:
