@@ -106,6 +106,114 @@ chown -R www-data:www-data /var/www/html
 
 Asigna como propietario del directorio web al usuario y grupo www-data.
 
+# htacces
+
+Ejemplo de .htaccess explicado línea por línea
+RewriteEngine On
+
+
+Activa el motor de reescritura de Apache para permitir reglas RewriteRule.
+
+RewriteCond %{HTTPS} !=on
+
+
+Comprueba si la petición no está usando HTTPS.
+
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+
+Redirige permanentemente la URL a su versión HTTPS.
+
+RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+
+
+Detecta cuando la petición viene desde un dominio que empieza con www..
+
+RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
+
+
+Redirige a la versión sin www manteniendo la ruta original.
+
+RewriteCond %{REQUEST_FILENAME} !-f
+
+
+Comprueba que la ruta pedida no corresponde a un archivo real.
+
+RewriteCond %{REQUEST_FILENAME} !-d
+
+
+Comprueba que la ruta pedida no corresponde a un directorio real.
+
+RewriteRule . /index.php [L,QSA]
+
+
+Envía todas las solicitudes al controlador principal index.php, preservando los parámetros.
+
+Options -Indexes
+
+
+Desactiva el listado de directorios para evitar mostrar archivos internos.
+
+DirectoryIndex index.php index.html
+
+
+Define el orden de archivos que Apache sirve como página por defecto.
+
+<Files .htaccess>
+
+
+Selecciona específicamente el archivo .htaccess.
+
+Require all denied
+
+
+Bloquea completamente el acceso público al archivo seleccionado.
+
+</Files>
+
+
+Cierra el bloque de protección del archivo.
+
+ErrorDocument 404 /errors/404.html
+
+
+Indica la página personalizada a mostrar cuando ocurre un error 404.
+
+ErrorDocument 500 /errors/500.html
+
+
+Indica la página personalizada a mostrar cuando ocurre un error 500.
+
+AddDefaultCharset UTF-8
+
+
+Define UTF-8 como codificación de caracteres por defecto en las respuestas.
+
+FileETag None
+
+
+Deshabilita el uso de ETags para simplificar la cache de archivos.
+
+Header set X-Frame-Options "SAMEORIGIN"
+
+
+Permite mostrar el sitio en iframes solo desde el mismo dominio.
+
+Header set X-XSS-Protection "1; mode=block"
+
+
+Activa un modo básico de protección contra ataques XSS en navegadores compatibles.
+
+Header set X-Content-Type-Options "nosniff"
+
+
+Evita que el navegador trate de adivinar el tipo de archivo y fuerce el MIME real.
+
+Redirect 301 /antigua-pagina.html /nueva-pagina/
+
+
+Redirige permanentemente una URL antigua hacia su versión nueva.
+
 # Capturas:
 Ejecución Install Lamp
 <img width="1624" height="705" alt="image" src="https://github.com/user-attachments/assets/7882cc64-91a2-481a-8902-f60978b0fdbd" />
