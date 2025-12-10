@@ -1,5 +1,76 @@
 # DespliegueWordpress
 
+Configuracion
+
+<VirtualHost *:80>
+    #ServerName PUT_YOUR_CERTBOT_DOMAIN_HERE
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/html/
+
+    DirectoryIndex index.php index.html
+
+    <Directory /var/www/html/>
+        AllowOverride All
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
+Script install_lamp.sh
+
+#!/bin/bash
+
+set -ex
+
+apt update
+
+apt upgrade
+
+apt install apache2 -y
+
+apt install php libapache2-mod-php php-mysql -y
+
+cp ../conf/000-default.conf /etc/apache2/sites-available/000-default.conf
+
+systemctl restart apache2
+
+cp ../php/index.php /var/www/html
+
+apt install mysql-server -y
+
+Script letsencrypt_certificate.sh
+
+#!/bin/bash
+
+# -e: FInaliza el script cuando hay error
+# -x: Muestra el comando por pantalla
+set -ex
+
+#importamos el archivo de variables
+source .env
+
+#copiamos la plantilla del archivo de configuracion del virtualhost en el servidor
+cp ../conf/000-default.conf /etc/apache2/sites-available
+
+#Configuramos al ServerName en el VirtualHost
+sed -i "s/PUT_YOUR_CERBOT_DOMAIN_HERE/$CERTBOT_DOMAIN/" /etc/apache2/sites-available/000-default.conf
+
+# Instalamos snap
+snap install core
+snap refresh core
+
+# Eliminamos cualquier version anterior de certbot
+apt remove certbot -y
+
+# Instalamos certbot
+snap install --classic certbot
+
+# Solicitamos el certificado a Let's Encrypt
+sudo certbot --apache -m $CERTBOT_EMAIL --agree-tos --no-eff-email -d $CERTBOT_DOMAIN --non-interactive
+
+Script Deploy.sh
+
 Explicación de comandos
 #!/bin/bash
 
