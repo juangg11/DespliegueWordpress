@@ -106,18 +106,35 @@ chown -R www-data:www-data /var/www/html
 
 Asigna como propietario del directorio web al usuario y grupo www-data.
 
-# htacces
+# .htaccess
 
-<IfModule mod_rewrite.c>    # Ejecuta estas reglas sólo si el módulo mod_rewrite está habilitado
-RewriteEngine On            # Activa el motor de reescritura de URLs
-RewriteBase /               # Define la ruta base para las reglas (aquí la raíz del sitio)
-RewriteRule ^index\.php$ - [L]   # Si se solicita index.php, no reescribir y terminar reglas
-RewriteCond %{REQUEST_FILENAME} !-f   # Continuar sólo si el archivo solicitado no existe
-RewriteCond %{REQUEST_FILENAME} !-d   # Continuar sólo si el directorio solicitado no existe
-RewriteRule . /index.php [L]         # Redirigir todo lo demás a index.php y terminar reglas
-</IfModule>                # Cierra el bloque que depende de mod_rewrite
+Este archivo configura la reescritura de URLs para dirigir todas las peticiones a `index.php`:
 
-# Capturas:
+- Activa el motor de reescritura
+- Define la raíz del sitio como base
+- Si se solicita `index.php` directamente, no hace nada
+- Si el archivo o directorio solicitado no existe, redirige a `index.php`
+````apache
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    RewriteRule ^index\.php$ - [L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule . /index.php [L]
+</IfModule>
+````
+
+**Explicación de las directivas:**
+
+- `<IfModule mod_rewrite.c>` - Ejecuta estas reglas sólo si el módulo mod_rewrite está habilitado
+- `RewriteEngine On` - Activa el motor de reescritura de URLs
+- `RewriteBase /` - Define la ruta base para las reglas (la raíz del sitio)
+- `RewriteRule ^index\.php$ - [L]` - Si se solicita index.php, no reescribir y terminar
+- `RewriteCond %{REQUEST_FILENAME} !-f` - Continuar sólo si el archivo no existe
+- `RewriteCond %{REQUEST_FILENAME} !-d` - Continuar sólo si el directorio no existe
+- `RewriteRule . /index.php [L]` - Redirigir todo lo demás a index.php
+
 Ejecución Install Lamp
 <img width="1624" height="705" alt="image" src="https://github.com/user-attachments/assets/7882cc64-91a2-481a-8902-f60978b0fdbd" />
 
